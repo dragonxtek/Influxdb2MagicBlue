@@ -33,9 +33,10 @@ def change_color(num=100):
     bulb.set_color(colorRgb)
     bulb.disconnect()
 
-def read_edge_influxdb(hostA,hostB,db='sdn',value='bw'):
+
+def read_edge_influxdb(hostA, hostB, db='sdn', value='bw'):
     client = InfluxDBClient(address, port, user, password, db)
-    result = client.query('select' + value +' from ' + table + ' where topology = \'' + topology + '\' and ((src=\'' + hostA + '\' and dst=\'' + hostB + '\') or (src = \'' + hostB + '\' and dst = \'' + hostA + '\')) order by time desc limit 1;')
+    result = client.query('select '+value+' from ' + table + ' where topology = \'' + topology + '\' and ((src=\'' + hostA + '\' and dst=\'' + hostB + '\') or (src = \'' + hostB + '\' and dst = \'' + hostA + '\')) order by time desc limit 1;')
     valores = result._get_series()[0].get('values')
     print("Last input {}".format(valores[0][1]))
     # get value
@@ -59,7 +60,7 @@ if __name__ == "__main__":
     db='sdn'
     table='edges'
     topology='ATT'
-    mac='c4:bd:7c:27:89:56'
+    mac='c4:bd:7c:27:89:bf'
     src='0'
     dst='2'
 
