@@ -5,8 +5,7 @@ import time
 import numpy as np
 import sys, getopt
 from influxdb import InfluxDBClient
-__author__ = 'nicolas.boettcher@udec.cl'
-
+__author__ = 'nboettcher@udec.cl'
 
 
 def cmap2hex(mag=0.5,cmax=1,cmin=0,cmap='jet'):
@@ -34,18 +33,9 @@ def change_color(num=100):
     bulb.set_color(colorRgb)
     bulb.disconnect()
 
-def lee_influxdb(value='bw',db='bulb',pos=-1):
-    client = InfluxDBClient(address, port, user, password, db)
-    # get the last value
-    result=  client.query('select value from bw order by time desc limit 1;')
-    # get the dictionary with all values
-    valores=result._get_series()[0].get('values')
-    print("Last input {}".format(valores[pos][1]))
-    return valores[pos][1]
-
 def read_edge_influxdb(hostA,hostB,db='sdn',value='bw'):
     client = InfluxDBClient(address, port, user, password, db)
-    result = client.query('select bw from ' + table + ' where topology = \'' + topology + '\' and ((src=\'' + hostA + '\' and dst=\'' + hostB + '\') or (src = \'' + hostB + '\' and dst = \'' + hostA + '\')) order by time desc limit 1;')
+    result = client.query('select' + value +' from ' + table + ' where topology = \'' + topology + '\' and ((src=\'' + hostA + '\' and dst=\'' + hostB + '\') or (src = \'' + hostB + '\' and dst = \'' + hostA + '\')) order by time desc limit 1;')
     valores = result._get_series()[0].get('values')
     print("Last input {}".format(valores[0][1]))
     # get value
@@ -82,7 +72,7 @@ if __name__ == "__main__":
 
     for o, a in myopts:
         if o == '-h':
-            print('bulb.py -a <address> -p <port> -u <user> -P <password> -D <database> -t <table> -T <topology> -s <source> -d <destination> -m <mac>')
+            print('Influxdb2MagicBlue.py -a <address> -p <port> -u <user> -P <password> -D <database> -t <table> -T <topology> -s <source> -d <destination> -m <mac>')
             sys.exit()
         elif o == '-a':
             address = a
